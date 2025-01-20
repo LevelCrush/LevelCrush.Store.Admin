@@ -43,6 +43,7 @@ module.exports = defineConfig({
   ],
   admin: {
     disable: process.env.DISABLE_MEDUSA_ADMIN === "true",
+    path: "/",
   },
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
