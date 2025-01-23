@@ -1,12 +1,36 @@
-import { loadEnv, defineConfig } from "@medusajs/framework/utils";
+import { loadEnv, defineConfig, Modules, ContainerRegistrationKeys } from "@medusajs/framework/utils";
+import { LEVELCRUSH_AUTH_MODULE } from "./src/modules/levelcrush-auth";
 
 loadEnv(process.env.NODE_ENV || "development", process.cwd());
 
 module.exports = defineConfig({
   modules: [
     {
-      resolve: "@medusajs/medusa/file",
+      resolve: "@medusajs/medusa/auth",
+      options: {
+        providers: [
+          // default provider
+          {
+            resolve: "@medusajs/medusa/auth-emailpass",
+            dependencies: [Modules.CACHE, ContainerRegistrationKeys.LOGGER],
+            id: "emailpass",
+          },
 
+          {
+            resolve: "./src/modules/levelcrush-auth",
+            id: "levelcrush-auth",
+            dependencies: [Modules.CACHE, ContainerRegistrationKeys.LOGGER],
+            options: {
+               authServer: process.env["LEVELCRUSH_AUTH_SERVER"],
+               authServerSecret: process.env["LEVELCRUSH_AUTH_SERVER_SECRET"],
+               storeUrl: process.env["MEDUSA_STORE_URL"]
+            },
+          },
+        ],
+      },
+    },
+    {
+      resolve: "@medusajs/medusa/file",
       options: {
         providers: [
           {
