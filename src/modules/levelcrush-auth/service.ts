@@ -10,6 +10,7 @@ import {
 } from "@medusajs/framework/utils";
 
 import crypto from "crypto";
+import { sdk } from "src/admin/lib/config";
 
 type InjectedDependencies = {
   logger: Logger;
@@ -18,7 +19,8 @@ type InjectedDependencies = {
 type Options = {
   authServer: string;
   authServerSecret: string;
-  storeUrl: string
+  storeUrl: string;
+  backendUrl: string;
 };
 
 interface DiscordValidationResult {
@@ -59,25 +61,31 @@ export default class LevelCrushAuthService extends AbstractAuthModuleProvider {
       );
     }
 
-    if(!options.storeUrl) {
-      throw new MedusaError(MedusaError.Types.INVALID_DATA, "Need Storefront url ");
+    if (!options.storeUrl) {
+      throw new MedusaError(
+        MedusaError.Types.INVALID_DATA,
+        "Need Storefront url "
+      );
     }
   }
-
 
   public async authenticate(
     data: AuthenticationInput,
     authIdentityProviderService: AuthIdentityProviderService
   ): Promise<AuthenticationResponse> {
-
+    const isAdminPath = (data.url || "").includes("auth/user");
     const stateKey = crypto.randomBytes(32).toString("hex");
-    const redirectUrl = `${this.options.storeUrl}/callback?token=${encodeURIComponent(
-      stateKey
-    )}`;
+
+    const target = (data.url || "").includes("auth/user")
+      ? `${this.options.backendUrl}/app/login${encodeURIComponent(stateKey)}`
+      : `${this.options.storeUrl}/callback`;
+
+    const redirectUrl = `${target}?token=${encodeURIComponent(stateKey)}`;
 
     await authIdentityProviderService.setState(stateKey, {
       redirectUrl: redirectUrl,
       token: stateKey,
+      admin: isAdminPath,
     });
 
     return {
@@ -110,6 +118,13 @@ export default class LevelCrushAuthService extends AbstractAuthModuleProvider {
 
     const token = authState.token;
 
+    if (token !== inputToken) {
+      return {
+        success: false,
+        error: "State mismatch",
+      };
+    }
+
     try {
       const claimReq = await fetch(
         `${this.options.authServer}/platform/discord/claim`,
@@ -120,17 +135,24 @@ export default class LevelCrushAuthService extends AbstractAuthModuleProvider {
             "X-API-KEY": this.options.authServerSecret,
             Accept: "application/json",
           },
-          body: JSON.stringify({token: token})
+          body: JSON.stringify({ token: token }),
         }
       );
 
       const claimData = (await claimReq.json()) as DiscordValidationResult;
+
+      // for now admins or mods can access this if they have the right privs
+      if ((claimData.isAdmin || claimData.isModerator) && authState.admin) {
+        return {
+          success: false,
+          error: "Insufficient authorization",
+        };
+      }
+
       const { authIdentity, success } = await this.upsert(
         claimData,
         authIdentityProviderService
       );
-      
-      
 
       return {
         success,
@@ -180,7 +202,12 @@ export default class LevelCrushAuthService extends AbstractAuthModuleProvider {
         provider_metadata: metadataProvider,
         user_metadata: metadata,
       });
-      console.log("Returning old identity", authIdentity, authIdentity.provider_identities);
+      console.log(
+        "Returning old identity",
+        authIdentity,
+        authIdentity.provider_identities
+      );
+
     } catch (error) {
       if (error.type === MedusaError.Types.NOT_FOUND) {
         const createdIdentity = await authIdentityProvider.create({
@@ -191,8 +218,11 @@ export default class LevelCrushAuthService extends AbstractAuthModuleProvider {
 
         authIdentity = createdIdentity;
 
-        console.log("Returning new identity",  authIdentity, authIdentity.provider_identities);
-
+        console.log(
+          "Returning new identity",
+          authIdentity,
+          authIdentity.provider_identities
+        );
       } else {
         return {
           success: false,

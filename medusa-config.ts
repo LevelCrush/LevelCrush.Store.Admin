@@ -23,7 +23,8 @@ module.exports = defineConfig({
             options: {
                authServer: process.env["LEVELCRUSH_AUTH_SERVER"],
                authServerSecret: process.env["LEVELCRUSH_AUTH_SERVER_SECRET"],
-               storeUrl: process.env["MEDUSA_STORE_URL"]
+               storeUrl: process.env["MEDUSA_STORE_URL"],
+               backendUrl: process.env["MEDUSA_BACKEND_URL"]
             },
           },
         ],
@@ -88,6 +89,7 @@ module.exports = defineConfig({
   admin: {
     disable: process.env.DISABLE_MEDUSA_ADMIN === "true",
     backendUrl: process.env.MEDUSA_BACKEND_URL,
+    storefrontUrl: process.env.MEDUSA_STORE_URL
   },
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
