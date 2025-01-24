@@ -158,6 +158,20 @@ class SanityModuleService {
       },
     };
   };
+
+  async getStudioLink(
+    type: string,
+    id: string,
+    config: { explicit_type?: boolean } = {}
+  ) {
+    const resolvedType = config.explicit_type ? type : this.typeMap[type];
+
+    if (!this.studioUrl) {
+      throw new Error("No studio URL provided");
+    }
+
+    return `${this.studioUrl}/structure/${resolvedType};${id}`;
+  }
 }
 
 export default SanityModuleService;
