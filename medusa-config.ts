@@ -42,7 +42,8 @@ module.exports = defineConfig({
         project_id: process.env.SANITY_PROJECT_ID,
         api_version: new Date().toISOString().split("T")[0],
         dataset: "production",
-        studio_url: process.env.SANITY_STUDIO_URL || "http://localhost:3000/studio",
+        studio_url:
+          process.env.SANITY_STUDIO_URL || "http://localhost:3000/studio",
         type_map: {
           product: "product",
         },
@@ -62,6 +63,22 @@ module.exports = defineConfig({
               region: process.env.S3_REGION,
               bucket: process.env.S3_BUCKET,
               endpoint: process.env.S3_ENDPOINT,
+            },
+          },
+        ],
+      },
+    },
+    {
+      resolve: "@medusajs/medusa/notification",
+      options: {
+        providers: [
+          {
+            resolve: "@medusajs/medusa/notification-sendgrid",
+            id: "sendgrid",
+            options: {
+              channels: ["email"],
+              api_key: process.env.SENDGRID_API_KEY,
+              from: process.env.SENDGRID_FROM,
             },
           },
         ],
