@@ -32,6 +32,8 @@ interface DiscordValidationResult {
   isModerator: boolean;
   nicknames: string[];
   globalName: string;
+  isBooster: boolean;
+  isRetired: boolean;
 }
 
 export default class LevelCrushAuthService extends AbstractAuthModuleProvider {
@@ -73,6 +75,8 @@ export default class LevelCrushAuthService extends AbstractAuthModuleProvider {
     data: AuthenticationInput,
     authIdentityProviderService: AuthIdentityProviderService
   ): Promise<AuthenticationResponse> {
+
+
     const isAdminPath = (data.url || "").includes("auth/user");
     const stateKey = crypto.randomBytes(32).toString("hex");
 
@@ -109,6 +113,7 @@ export default class LevelCrushAuthService extends AbstractAuthModuleProvider {
     const inputToken = query.token || "";
 
     const authState = await authIdentityProviderService.getState(inputToken);
+    
     if (!authState) {
       return {
         success: false,
@@ -188,6 +193,8 @@ export default class LevelCrushAuthService extends AbstractAuthModuleProvider {
       "discord.admin": data.isAdmin,
       "discord.moderator": data.isModerator,
       "discord.email": data.email,
+      "discord.booster": data.isBooster,
+      "discord.retired" : data.isRetired
     };
 
     const metadataProvider = {
@@ -202,11 +209,6 @@ export default class LevelCrushAuthService extends AbstractAuthModuleProvider {
         provider_metadata: metadataProvider,
         user_metadata: metadata,
       });
-      console.log(
-        "Returning old identity",
-        authIdentity,
-        authIdentity.provider_identities
-      );
 
     } catch (error) {
       if (error.type === MedusaError.Types.NOT_FOUND) {
@@ -217,12 +219,6 @@ export default class LevelCrushAuthService extends AbstractAuthModuleProvider {
         });
 
         authIdentity = createdIdentity;
-
-        console.log(
-          "Returning new identity",
-          authIdentity,
-          authIdentity.provider_identities
-        );
       } else {
         return {
           success: false,
