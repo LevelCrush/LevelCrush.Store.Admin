@@ -117,7 +117,7 @@ export default async function seedSeals({ container }: ExecArgs) {
       },
       prices: [
         {
-          amount: 2,
+          amount: 0,
           currency_code: "usd",
         },
       ],
@@ -249,7 +249,7 @@ export default async function seedSeals({ container }: ExecArgs) {
         },
         prices: [
           {
-            amount: 25,
+            amount: 0,
             currency_code: "usd",
           },
         ],
@@ -281,7 +281,7 @@ export default async function seedSeals({ container }: ExecArgs) {
         sku: "LVL-BOX-KEEPSAKE-AUTO",
         prices: [
           {
-            amount: 25,
+            amount: 0,
             currency_code: "usd",
           },
         ],
@@ -299,7 +299,7 @@ export default async function seedSeals({ container }: ExecArgs) {
         },
         prices: [
           {
-            amount: 25,
+            amount: 0,
             currency_code: "usd",
           },
         ],
@@ -314,7 +314,7 @@ export default async function seedSeals({ container }: ExecArgs) {
         },
         prices: [
           {
-            amount: 25,
+            amount: 0,
             currency_code: "usd",
           },
         ],
@@ -359,7 +359,7 @@ export default async function seedSeals({ container }: ExecArgs) {
         },
         prices: [
           {
-            amount: 20,
+            amount: 0,
             currency_code: "usd",
           },
         ],
@@ -375,7 +375,7 @@ export default async function seedSeals({ container }: ExecArgs) {
         },
         prices: [
           {
-            amount: 20,
+            amount: 0,
             currency_code: "usd",
           },
         ],
@@ -391,7 +391,7 @@ export default async function seedSeals({ container }: ExecArgs) {
         },
         prices: [
           {
-            amount: 20,
+            amount: 0,
             currency_code: "usd",
           },
         ],
@@ -407,7 +407,7 @@ export default async function seedSeals({ container }: ExecArgs) {
         },
         prices: [
           {
-            amount: 20,
+            amount: 0,
             currency_code: "usd",
           },
         ],
