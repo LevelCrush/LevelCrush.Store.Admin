@@ -108,7 +108,7 @@ export default async function seedSeals({ container }: ExecArgs) {
   // varient
   for (const title in sealMap) {
     varients.push({
-      title: title,
+      title: `Gift Seal: ${title}`,
       sku: sealMap[title],
       manage_inventory: true,
       allow_backorder: true,
@@ -146,7 +146,7 @@ export default async function seedSeals({ container }: ExecArgs) {
     ],
     variants: [
       {
-        title: "Active Founder (2024)",
+        title: "Holiday Gift Pack: Active Founder (2024)",
         sku: "GIFT-H24-FNDR",
         options: {
           Year: "2024",
@@ -157,7 +157,7 @@ export default async function seedSeals({ container }: ExecArgs) {
         prices: [{ amount: 0, currency_code: "usd" }],
       },
       {
-        title: "Retired Founder (2024)",
+        title: "Holiday Gift Pack: Retired Founder (2024)",
         sku: "GIFT-H24-RETF",
         options: {
           Year: "2024",
@@ -168,7 +168,7 @@ export default async function seedSeals({ container }: ExecArgs) {
         prices: [{ amount: 0, currency_code: "usd" }],
       },
       {
-        title: "Server Booster (2024)",
+        title: "Holiday Gift Pack: Server Booster (2024)",
         sku: "GIFT-H24-BOOSTER",
         options: {
           Year: "2024",
@@ -179,7 +179,7 @@ export default async function seedSeals({ container }: ExecArgs) {
         prices: [{ amount: 0, currency_code: "usd" }],
       },
       {
-        title: "Normal (2024)",
+        title: "Hooliday Gift Pack: Normal (2024)",
         sku: "GIFT-H24-CLAN",
         options: {
           Year: "2024",
@@ -239,7 +239,7 @@ export default async function seedSeals({ container }: ExecArgs) {
     ],
     variants: [
       {
-        title: "30oz Engraved Tumbler",
+        title: "Level Crush Tumber: 30oz Engraved",
         sku: "LVL-TUMBLER-ENG-30",
         allow_backorder: true,
         manage_inventory: true,
@@ -275,7 +275,7 @@ export default async function seedSeals({ container }: ExecArgs) {
     ],
     variants: [
       {
-        title: "(Auto) Keepsake Box",
+        title: "Level Crush Keepsake Box (Auto)",
         allow_backorder: true,
         manage_inventory: true,
         sku: "LVL-BOX-KEEPSAKE-AUTO",
@@ -290,7 +290,7 @@ export default async function seedSeals({ container }: ExecArgs) {
         }
       },
       {
-        title: "Freestyle Keepsake Box",
+        title: "Level Crush Keepsake Box (Freestyle)",
         allow_backorder: true,
         manage_inventory: true,
         sku: "LVL-BOX-KEEPSAKE-FS",
@@ -305,7 +305,7 @@ export default async function seedSeals({ container }: ExecArgs) {
         ],
       },
       {
-        title: "Personalized Keepsake Box",
+        title: "Level Crush Keepsake Box (Personalized)",
         allow_backorder: true,
         manage_inventory: true,
         sku: "LVL-BOX-KEEPSAKE-PERSONAL",
@@ -349,7 +349,7 @@ export default async function seedSeals({ container }: ExecArgs) {
     ],
     variants: [
       {
-        title: "Active Founder",
+        title: "Membership Card: Active Founder",
         allow_backorder: true,
         manage_inventory: true,
         sku: "LVL-MCARD-FNDR",
@@ -365,7 +365,7 @@ export default async function seedSeals({ container }: ExecArgs) {
         ],
       },
       {
-        title: "Retired Founder",
+        title: "Membership Card: Retired Founder",
         allow_backorder: true,
         manage_inventory: true,
         sku: "LVL-MCARD-RETF",
@@ -381,7 +381,7 @@ export default async function seedSeals({ container }: ExecArgs) {
         ],
       },
       {
-        title: "Omnicron",
+        title: "Membership Card: Omnicron",
         allow_backorder: true,
         manage_inventory: true,
         sku: "LVL-MCARD-OMNI",
@@ -397,7 +397,7 @@ export default async function seedSeals({ container }: ExecArgs) {
         ],
       },
       {
-        title: "Standard",
+        title: "Membership Card: Standard",
         allow_backorder: true,
         manage_inventory: true,
         sku: "LVL-MCARD-STND",
