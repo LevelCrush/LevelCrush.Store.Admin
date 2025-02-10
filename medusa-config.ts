@@ -1,4 +1,9 @@
-import { loadEnv, defineConfig, Modules, ContainerRegistrationKeys } from "@medusajs/framework/utils";
+import {
+  loadEnv,
+  defineConfig,
+  Modules,
+  ContainerRegistrationKeys,
+} from "@medusajs/framework/utils";
 import { LEVELCRUSH_AUTH_MODULE } from "./src/modules/levelcrush-auth";
 
 loadEnv(process.env.NODE_ENV || "development", process.cwd());
@@ -21,13 +26,27 @@ module.exports = defineConfig({
             id: "levelcrush-auth",
             dependencies: [Modules.CACHE, ContainerRegistrationKeys.LOGGER],
             options: {
-               authServer: process.env["LEVELCRUSH_AUTH_SERVER"],
-               authServerSecret: process.env["LEVELCRUSH_AUTH_SERVER_SECRET"],
-               storeUrl: process.env["MEDUSA_STORE_URL"],
-               backendUrl: process.env["MEDUSA_BACKEND_URL"]
+              authServer: process.env["LEVELCRUSH_AUTH_SERVER"],
+              authServerSecret: process.env["LEVELCRUSH_AUTH_SERVER_SECRET"],
+              storeUrl: process.env["MEDUSA_STORE_URL"],
+              backendUrl: process.env["MEDUSA_BACKEND_URL"],
             },
           },
         ],
+      },
+    },
+    {
+      resolve: "./src/modules/sanity",
+      options: {
+        api_token: process.env.SANITY_API_TOKEN,
+        project_id: process.env.SANITY_PROJECT_ID,
+        api_version: new Date().toISOString().split("T")[0],
+        dataset: "production",
+        studio_url:
+          process.env.SANITY_STUDIO_URL || "http://localhost:3000/studio",
+        type_map: {
+          product: "product",
+        },
       },
     },
     {
@@ -44,6 +63,22 @@ module.exports = defineConfig({
               region: process.env.S3_REGION,
               bucket: process.env.S3_BUCKET,
               endpoint: process.env.S3_ENDPOINT,
+            },
+          },
+        ],
+      },
+    },
+    {
+      resolve: "@medusajs/medusa/notification",
+      options: {
+        providers: [
+          {
+            resolve: "@medusajs/medusa/notification-sendgrid",
+            id: "sendgrid",
+            options: {
+              channels: ["email"],
+              api_key: process.env.SENDGRID_API_KEY,
+              from: process.env.SENDGRID_FROM,
             },
           },
         ],
@@ -89,10 +124,17 @@ module.exports = defineConfig({
   admin: {
     disable: process.env.DISABLE_MEDUSA_ADMIN === "true",
     backendUrl: process.env.MEDUSA_BACKEND_URL,
-    storefrontUrl: process.env.MEDUSA_STORE_URL
+    storefrontUrl: process.env.MEDUSA_STORE_URL,
   },
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
+    databaseDriverOptions: {
+      ssl: process.env["DATABASE_SSL"]
+        ? {
+            rejectUnauthorized: true,
+          }
+        : false,
+    },
     workerMode: process.env.MEDUSA_WORKER_MODE as
       | "shared"
       | "worker"

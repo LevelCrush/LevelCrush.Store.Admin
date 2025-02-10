@@ -32,6 +32,8 @@ interface DiscordValidationResult {
   isModerator: boolean;
   nicknames: string[];
   globalName: string;
+  isBooster: boolean;
+  isRetired: boolean;
 }
 
 export default class LevelCrushAuthService extends AbstractAuthModuleProvider {
@@ -76,6 +78,9 @@ export default class LevelCrushAuthService extends AbstractAuthModuleProvider {
     const isAdminPath = (data.url || "").includes("auth/user");
     const stateKey = crypto.randomBytes(32).toString("hex");
 
+    const query = data.query || {};
+    const userRedirect = query["redirect"] || "";
+
     const target = (data.url || "").includes("auth/user")
       ? `${this.options.backendUrl}/app/login${encodeURIComponent(stateKey)}`
       : `${this.options.storeUrl}/callback`;
@@ -86,6 +91,7 @@ export default class LevelCrushAuthService extends AbstractAuthModuleProvider {
       redirectUrl: redirectUrl,
       token: stateKey,
       admin: isAdminPath,
+      userRedirect,
     });
 
     return {
@@ -94,7 +100,7 @@ export default class LevelCrushAuthService extends AbstractAuthModuleProvider {
         this.options.authServer
       }/platform/discord/login?token=${encodeURIComponent(
         stateKey
-      )}&redirectUrl=${encodeURIComponent(redirectUrl)}`,
+      )}&redirectUrl=${encodeURIComponent(redirectUrl)}&userRedirect=${encodeURIComponent(userRedirect)}`,
     };
   }
 
@@ -109,6 +115,7 @@ export default class LevelCrushAuthService extends AbstractAuthModuleProvider {
     const inputToken = query.token || "";
 
     const authState = await authIdentityProviderService.getState(inputToken);
+
     if (!authState) {
       return {
         success: false,
@@ -157,12 +164,14 @@ export default class LevelCrushAuthService extends AbstractAuthModuleProvider {
       return {
         success,
         authIdentity,
-      };
+        userRedirect: authState.userRedirect || "",
+      } as AuthenticationResponse;
     } catch (error) {
       return {
         success: false,
         error: "Unable to complete validation: " + error,
-      };
+        userRedirect: "",
+      } as AuthenticationResponse;
     }
   }
 
@@ -188,6 +197,8 @@ export default class LevelCrushAuthService extends AbstractAuthModuleProvider {
       "discord.admin": data.isAdmin,
       "discord.moderator": data.isModerator,
       "discord.email": data.email,
+      "discord.booster": data.isBooster,
+      "discord.retired": data.isRetired,
     };
 
     const metadataProvider = {
@@ -202,12 +213,6 @@ export default class LevelCrushAuthService extends AbstractAuthModuleProvider {
         provider_metadata: metadataProvider,
         user_metadata: metadata,
       });
-      console.log(
-        "Returning old identity",
-        authIdentity,
-        authIdentity.provider_identities
-      );
-
     } catch (error) {
       if (error.type === MedusaError.Types.NOT_FOUND) {
         const createdIdentity = await authIdentityProvider.create({
@@ -217,12 +222,6 @@ export default class LevelCrushAuthService extends AbstractAuthModuleProvider {
         });
 
         authIdentity = createdIdentity;
-
-        console.log(
-          "Returning new identity",
-          authIdentity,
-          authIdentity.provider_identities
-        );
       } else {
         return {
           success: false,
