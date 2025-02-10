@@ -8,6 +8,10 @@ import { LEVELCRUSH_AUTH_MODULE } from "./src/modules/levelcrush-auth";
 
 loadEnv(process.env.NODE_ENV || "development", process.cwd());
 
+
+console.log("SENDGRID_API_KEY", process.env.SENDGRID_API_KEY);
+console.log("EntireEnv", process.env);
+
 module.exports = defineConfig({
   modules: [
     {
