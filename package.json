@@ -16,6 +16,7 @@
     "build": "medusa build",
     "build:link" : "medusa build && ln -s .medusa/server/public/ public",
     "seed": "medusa exec ./src/scripts/seed.ts",
+    "seed:levelcrush" : "medusa exec ./src/scripts/seed-lc-products",
     "start": "medusa start",
     "dev": "medusa develop",
     "predeploy": "medusa db:migrate",
