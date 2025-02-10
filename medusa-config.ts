@@ -128,6 +128,13 @@ module.exports = defineConfig({
   },
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
+    databaseDriverOptions: {
+      ssl: process.env["DATABASE_SSL"]
+        ? {
+            rejectUnauthorized: true,
+          }
+        : false,
+    },
     workerMode: process.env.MEDUSA_WORKER_MODE as
       | "shared"
       | "worker"
