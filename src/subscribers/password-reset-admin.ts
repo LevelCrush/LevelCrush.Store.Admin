@@ -13,8 +13,9 @@ import type {
       container.resolve(Modules.NOTIFICATION)
 
      const data = event.data;
+
      const prefix = event.data.actor_type === 'customer' ? process.env['MEDUSA_STORE_URL'] : `${process.env["MEDUSA_ADMIN_BACKEND_URL"]}/app`;
-    var forgotPasswordLink = `${prefix}/reset-password?token=${encodeURIComponent(data.token)}&email=${encodeURIComponent(data.token)}`;
+    var forgotPasswordLink = `${prefix}/reset-password?token=${encodeURIComponent(data.token)}&email=${encodeURIComponent(data.entity_id)}`;
 
     var emailVars = {
         link: forgotPasswordLink
