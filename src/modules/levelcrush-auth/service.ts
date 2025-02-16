@@ -205,7 +205,7 @@ export default class LevelCrushAuthService extends AbstractAuthModuleProvider {
         },
       });
 
-      // compare and find
+      // compare and find assuming there is an identity provider with an account password set
       for (const identity of qResults.data) {
         const metadata = identity.provider_metadata || {};
         const accountPassword = metadata["account.password"] || "";
