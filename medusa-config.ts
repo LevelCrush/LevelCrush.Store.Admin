@@ -12,6 +12,11 @@ module.exports = defineConfig({
   modules: [
     {
       resolve: "@medusajs/medusa/auth",
+      dependencies: [
+        Modules.CACHE,
+        ContainerRegistrationKeys.LOGGER,
+        ContainerRegistrationKeys.QUERY,
+      ],
       options: {
         providers: [
           // default provider
@@ -24,12 +29,18 @@ module.exports = defineConfig({
           {
             resolve: "./src/modules/levelcrush-auth",
             id: "levelcrush-auth",
-            dependencies: [Modules.CACHE, ContainerRegistrationKeys.LOGGER],
+            dependencies: [
+              Modules.CACHE,
+              ContainerRegistrationKeys.LOGGER,
+              ContainerRegistrationKeys.QUERY,
+            ],
             options: {
               authServer: process.env["LEVELCRUSH_AUTH_SERVER"],
               authServerSecret: process.env["LEVELCRUSH_AUTH_SERVER_SECRET"],
               storeUrl: process.env["MEDUSA_STORE_URL"],
               backendUrl: process.env["MEDUSA_BACKEND_URL"],
+              saltRounds: process.env["SALT_ROUNDS"] || "10",
+              apiKey: process.env["JWT_SECRET"] || crypto.randomUUID()
             },
           },
         ],
