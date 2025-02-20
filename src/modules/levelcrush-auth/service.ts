@@ -313,10 +313,14 @@ export default class LevelCrushAuthService extends AbstractAuthModuleProvider {
         };
       }
 
-      const { authIdentity, success } = await this.upsert(
+      const { authIdentity, success, metadata } = await this.upsert(
         claimData,
         authIdentityProviderService
       );
+
+      let metadata_coa = metadata || {};
+      authState.metadata = metadata_coa;
+      authIdentityProviderService.setState(inputToken, authState);
 
       return {
         success,
@@ -390,6 +394,7 @@ export default class LevelCrushAuthService extends AbstractAuthModuleProvider {
     return {
       success: true,
       authIdentity,
+      metadata,
     };
   }
 }

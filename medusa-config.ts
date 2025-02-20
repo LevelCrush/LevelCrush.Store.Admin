@@ -40,7 +40,7 @@ module.exports = defineConfig({
               storeUrl: process.env["MEDUSA_STORE_URL"],
               backendUrl: process.env["MEDUSA_BACKEND_URL"],
               saltRounds: process.env["SALT_ROUNDS"] || "10",
-              apiKey: process.env["JWT_SECRET"] || crypto.randomUUID()
+              apiKey: process.env["JWT_SECRET"] || crypto.randomUUID(),
             },
           },
         ],
